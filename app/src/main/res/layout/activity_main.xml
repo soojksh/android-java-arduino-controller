@@ -138,30 +138,48 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <Switch
-        android:id="@+id/moistureSwitch"
+    <LinearLayout
+        android:id="@+id/moistureLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/controller"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:checked="false"
-        android:text="@string/moisture"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:text="@string/moisture"/>
+
+
+        <Switch
+            android:id="@+id/moistureSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+    </LinearLayout>
+
+
 
 
     <TextView
         android:id="@+id/moisture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/moistureSwitch"
+        android:layout_below="@id/moistureLayout"
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:text="24.26589" />
 
@@ -197,21 +215,37 @@
     </LinearLayout>
 
 
-
-    <Switch
-        android:id="@+id/waterPump"
+    <LinearLayout
+        android:id="@+id/waterpumpLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/seeder"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:checked="false"
-        android:text="@string/water_pump"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:text="@string/water_pump"/>
+
+
+        <Switch
+            android:id="@+id/waterPump"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+    </LinearLayout>
+
 
 
 </RelativeLayout>

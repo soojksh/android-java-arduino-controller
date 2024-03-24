@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 
-    AppCompatButton bluetoothBtn, scanButton;
-    BluetoothManager bluetoothManager;
+    AppCompatButton bluetoothBtn, scanButton, seederLow, seederMedium, seederHigh;
     BluetoothAdapter bluetoothAdapter;
     BluetoothDevice bluetoothDevice;
     BluetoothSocket bluetoothSocket;
@@ -65,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         deviceListView = findViewById(R.id.deviceListView);
         waterPump = findViewById(R.id.waterPump);
         moistureSwitch = findViewById(R.id.moistureSwitch);
+        seederLow = findViewById(R.id.seederLow);
+        seederHigh = findViewById(R.id.seederHigh);
+        seederMedium = findViewById(R.id.seederMedium);
 
         bluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +115,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendData('P');
+            }
+        });
+
+        seederLow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendData('L');
+            }
+        });
+
+        seederHigh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendData('H');
+            }
+        });
+
+        seederMedium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendData('2');
             }
         });
 
