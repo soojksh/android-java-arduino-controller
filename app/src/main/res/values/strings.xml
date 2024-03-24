@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ArduinoApp</string>
+    <string name="moisture_sensor">Moisture Sensor</string>
+    <string name="scan_for_devices">Scan for Devices</string>
+    <string name="connect_to_hc_05">Connect to HC-05</string>
+    <string name="seeder">Seeder</string>
+    <string name="connect_to_hc">Connect to HC-05</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="water_pump">Water pump</string>
+    <string name="moisture">Moisture</string>
+    <string name="seeder_l">Seeder(L)</string>
+    <string name="seeder_m">Seeder(M)</string>
+    <string name="seeder_h">Seeder(H)</string>
+</resources>
