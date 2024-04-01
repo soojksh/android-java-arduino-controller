@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 
-    AppCompatButton bluetoothBtn, scanButton, seederLow, seederMedium, seederHigh;
+    AppCompatButton bluetoothBtn, scanButton;
     BluetoothAdapter bluetoothAdapter;
     BluetoothDevice bluetoothDevice;
     BluetoothSocket bluetoothSocket;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView deviceListView;
     private boolean isConnected = false;
-    Switch waterPump, moistureSwitch;
+    Switch seederSwitch, moistureSwitch;
     AppCompatImageButton upButton, downButton, leftButton, stopButton, rightButton;
 
     @Override
@@ -62,11 +63,9 @@ public class MainActivity extends AppCompatActivity {
         stopButton = findViewById(R.id.stopButton);
         scanButton = findViewById(R.id.scanBtn);
         deviceListView = findViewById(R.id.deviceListView);
-        waterPump = findViewById(R.id.waterPump);
+        seederSwitch = findViewById(R.id.seederSwitch);
         moistureSwitch = findViewById(R.id.moistureSwitch);
-        seederLow = findViewById(R.id.seederLow);
-        seederHigh = findViewById(R.id.seederHigh);
-        seederMedium = findViewById(R.id.seederMedium);
+
 
         bluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,12 +82,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         upButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendData('U');
             }
         });
+
 
         downButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,12 +98,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendData('L');
             }
         });
+
 
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,46 +122,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        seederLow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendData('L');
-            }
-        });
-
-        seederHigh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendData('H');
-            }
-        });
-
-        seederMedium.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendData('2');
-            }
-        });
-
-
 
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
                     sendData('M');
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            moistureSwitch.setChecked(false);
+                        }
+                    }, 10000);
                 }
 
             }
         });
 
 
-
-        waterPump.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        seederSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked){
-                    sendData('W');
+                    sendData('S');
+
                 }
                 else {
                     // Switch is unchecked
@@ -165,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
 
     }
 
@@ -176,8 +165,6 @@ public class MainActivity extends AppCompatActivity {
             showToast("Bluetooth not supported");
             return;
         }
-
-
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {

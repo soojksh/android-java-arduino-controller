@@ -183,42 +183,12 @@
         android:textSize="18sp"
         android:text="24.26589" />
 
-    <LinearLayout
-        android:id="@+id/seeder"
-        android:layout_margin="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/moisture"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/seederLow"
-            android:text="@string/seeder_l"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/seederMedium"
-            android:text="@string/seeder_m"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/seederHigh"
-            android:text="@string/seeder_h"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/waterpumpLayout"
         android:layout_width="match_parent"
-        android:layout_below="@id/seeder"
+        android:layout_below="@id/moisture"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:layout_margin="20dp"
@@ -231,11 +201,11 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_gravity="center_vertical"
-            android:text="@string/water_pump"/>
+            android:text="@string/seeder"/>
 
 
         <Switch
-            android:id="@+id/waterPump"
+            android:id="@+id/seederSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
