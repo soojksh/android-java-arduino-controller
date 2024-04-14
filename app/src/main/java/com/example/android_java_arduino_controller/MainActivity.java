@@ -37,9 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT_PERMISSION = 2;
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-
     AppCompatButton bluetoothBtn, scanButton;
-    BluetoothAdapter bluetoothAdapter;
+    BluetoothAdapter bluetoothAdapter; 
     BluetoothDevice bluetoothDevice;
     BluetoothSocket bluetoothSocket;
 
@@ -150,8 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else {
-                    // Switch is unchecked
-                    // You can add handling for this scenario if needed
+                    sendData('T');
                 }
             }
         });
@@ -167,10 +165,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN}, 100);
+                ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT}, 100);
             return;
         }
+
 
         if (!bluetoothAdapter.isEnabled()) {
             // Bluetooth is not enabled, show dialog to request permission
@@ -180,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!isConnected){
-
             bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:22:03:01:01:52"); // Replace with your HC-05 MAC address
             if (bluetoothDevice == null) {
 
@@ -226,13 +225,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
         if (!bluetoothAdapter.isEnabled()) {
             // Check if permission is granted to enable Bluetooth
-            if (checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                // Permissions not granted, request permission
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT_PERMISSION);
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT}, 100);
                 return;
             }
+
 
         }
 //        System.out.println(bluetoothAdapter.getBondedDevices());
@@ -256,10 +258,12 @@ public class MainActivity extends AppCompatActivity {
                 String deviceName = selectedItem.split("\\(")[0].trim();
 
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN}, 100);
+                        ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT}, 100);
                     return;
                 }
+
 
                 // Iterate through bonded devices to find the device with matching name
                 for (BluetoothDevice device : bondedDevices) {
@@ -290,11 +294,13 @@ public class MainActivity extends AppCompatActivity {
                 // Permission granted, check if Bluetooth is enabled
                 if (!bluetoothAdapter.isEnabled()) {
                     // Check if permission is granted to enable Bluetooth
-                    if (checkSelfPermission(android.Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                        // Permissions not granted, request permission
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT_PERMISSION);
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
+                            ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED ||
+                            ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT}, 100);
                         return;
                     }
+
 
                     // Permissions granted, show dialog to request enabling Bluetooth
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
