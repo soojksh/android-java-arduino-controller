@@ -1,10 +1,14 @@
 package com.example.android_java_arduino_controller;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
+
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +20,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,9 +29,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
@@ -43,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
     BluetoothSocket bluetoothSocket;
 
     OutputStream outputStream;
+    InputStream inputStream;
+    BufferedReader reader;
 
     ListView deviceListView;
     private boolean isConnected = false;
     Switch seederSwitch, moistureSwitch;
+    TextView moistureTextView;
     AppCompatImageButton upButton, downButton, leftButton, stopButton, rightButton;
 
     @Override
@@ -64,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         deviceListView = findViewById(R.id.deviceListView);
         seederSwitch = findViewById(R.id.seederSwitch);
         moistureSwitch = findViewById(R.id.moistureSwitch);
+        moistureTextView = findViewById(R.id.moistureTextView);
 
 
         bluetoothBtn.setOnClickListener(new View.OnClickListener() {
@@ -125,20 +139,26 @@ public class MainActivity extends AppCompatActivity {
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
+                    // Send command to Arduino to request moisture data
                     sendData('M');
+                    receiveMoistureData();
 
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    // Turn off the moisture switch after 10 seconds
+                    new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             moistureSwitch.setChecked(false);
                         }
-                    }, 10000);
-                }
+                    }, 7000); // 10 seconds in milliseconds
 
+
+                }
             }
         });
+
+
+
 
 
         seederSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -154,6 +174,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void receiveMoistureData() {
+        if (isConnected && inputStream != null) {
+            Log.d(TAG, "Connected and Input stream");
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            // Create a separate thread to read data from the input stream
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String line;
+                    try {
+                        while ((line = reader.readLine()) != null) {
+                            // Update the UI on the main thread
+                            String finalLine = line;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int moisture=Integer.parseInt(finalLine);
+                                    if (moisture>=1000){
+                                        moistureTextView.setText("Moisture Level: " + finalLine + "\nSensor is not in the soil.");
+                                    } else if (moisture>600 && moisture<1000) {
+                                        moistureTextView.setText("Moisture Level: " + finalLine + "\nSoil is DRY");
+                                    } else if (moisture>370 && moisture <600) {
+                                        moistureTextView.setText("Moisture Level: " + finalLine + "\nSoil is HUMID");
+                                    }
+                                    else{
+                                        moistureTextView.setText("Moisture Level: " + finalLine + "\nSensor is in WATER");
+
+                                    }
+
+
+                                    Log.d(TAG, "Moisture Level: " + finalLine);
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            reader.close(); // Close the reader
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        } else {
+            showToast("Bluetooth not connected");
+        }
     }
 
     private void connectBluetooth() {
@@ -196,6 +268,9 @@ public class MainActivity extends AppCompatActivity {
                 deviceListView.setVisibility(View.GONE);
                 isConnected = true;
                 outputStream = bluetoothSocket.getOutputStream();
+                inputStream = bluetoothSocket.getInputStream();
+
+
                 showToast(bluetoothDevice.getName()+" connected");
 
             } catch (IOException e) {
@@ -329,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
             showToast("Bluetooth not connected");
         }
     }
+
 
 
     private void showToast(String message) {
